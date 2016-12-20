@@ -7,6 +7,7 @@ defmodule Sulat.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Sulat.Auth, repo: Sulat.Repo
   end
 
   pipeline :api do
@@ -17,8 +18,7 @@ defmodule Sulat.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/login", SessionController, :new
-    post "/login", SessionController, :create
+    resources "/session", SessionController, only: [:new, :create, :delete]
     resources "/users", UserController, only: [:new]
   end
 
