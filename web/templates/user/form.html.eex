@@ -5,8 +5,8 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= label f, :username, class: "control-label" %>
+  <div class="input-field">
+    <%= label f, :username, class: "" %>
     <%= text_input f, :username, class: "form-control" %>
     <%= error_tag f, :username %>
   </div>

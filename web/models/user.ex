@@ -1,4 +1,6 @@
 defmodule Sulat.User do
+  alias Comeonin.Bcrypt
+
   use Sulat.Web, :model
 
   schema "users" do
@@ -17,8 +19,8 @@ defmodule Sulat.User do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:username, :password])
-    |> validate_required([:username, :password])
+    |> cast(params, ~w(username), [])
+    |> validate_required(:username, min: 3, max: 45)
     |> unique_constraint(:username)
   end
 
@@ -32,15 +34,21 @@ defmodule Sulat.User do
     |> cast(params, ~w(password), [])
     |> validate_length(:password, min: 8, max: 80)
     # before sending back to controller, update changeset with the hashed password
-    |> hash_pw
+    |> add_hashed_pw
   end
 
-  def hash_pw(changeset) do
+  def add_hashed_pw(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
         # Ecto.Changeset.put_change
-        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
-      _ -> changeset
+        put_change(changeset, :password_hash, hash(password))
+      _ -> 
+        # return invalid changeset
+        changeset
     end
+  end
+
+  def hash(password) do
+    Bcrypt.hashpwsalt(password)
   end
 end

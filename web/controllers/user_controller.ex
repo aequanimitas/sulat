@@ -15,14 +15,16 @@ defmodule Sulat.UserController do
 
   def create(conn, %{"user" => user_params}) do
     changeset = User.pw_hash_changeset(%User{}, user_params)
-
     case Repo.insert(changeset) do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+        # change path to somewhere more useful
+        |> redirect(to: page_path(conn, :index))
       {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        conn
+        |> put_flash(:info, "Errors.")
+        |> render("new.html", changeset: changeset)
     end
   end
 

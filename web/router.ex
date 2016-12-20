@@ -17,7 +17,9 @@ defmodule Sulat.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    resources "/users", UserController
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
+    resources "/users", UserController, only: [:new]
   end
 
   # Other scopes may use custom stacks.
