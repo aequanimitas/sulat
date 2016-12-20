@@ -20,6 +20,7 @@ defmodule Sulat.Router do
     get "/", PageController, :index
     resources "/session", SessionController, only: [:new, :create, :delete]
     resources "/users", UserController, only: [:new]
+    resources "/posts", PostController
   end
 
   # Other scopes may use custom stacks.
