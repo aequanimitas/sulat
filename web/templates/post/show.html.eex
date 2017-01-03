@@ -1,18 +1,8 @@
-<h2>Show post</h2>
+<h3>
+  <%= @post.title %>
+</h3>
 
-<ul>
-
-  <li>
-    <strong>Text:</strong>
-    <%= @post.text %>
-  </li>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @post.title %>
-  </li>
-
-</ul>
+<%= raw(@post.text) %>
 
 <%= link "Edit", to: post_path(@conn, :edit, @post) %>
 <%= link "Back", to: post_path(@conn, :index) %>

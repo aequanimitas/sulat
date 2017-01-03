@@ -27,7 +27,7 @@ defmodule Sulat.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Repo.get!(Post, id)
+    post = Repo.get!(Post, id) |> update_text_to_markdown
     render(conn, "show.html", post: post)
   end
 
@@ -61,5 +61,9 @@ defmodule Sulat.PostController do
     conn
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: post_path(conn, :index))
+  end
+
+  def update_text_to_markdown(post) do
+    %{post | text: post.text |> Earmark.to_html}
   end
 end

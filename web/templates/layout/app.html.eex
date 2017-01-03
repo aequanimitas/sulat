@@ -19,19 +19,16 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
+            <%= if @user do %>
+              <li>
+                <%= link "Logout", to: session_path(@conn, :delete, @user), method: "delete"%> 
+              </li>
+            <%= else %>
+                <%= link "Login", to: session_path(@conn, :new)%> 
+            <% end %>
           </ul>
         </nav>
-        <span class="logo"></span>
       </header>
-      <%= if @user do %>
-        <li><%= @user.username %></li>
-        <li>
-          <%= link "Logout", to: session_path(@conn, :delete, @user), method: "delete"%> 
-          </li>
-      <%= else %>
-          <%= link "Login", to: session_path(@conn, :new)%> 
-      <% end %>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 

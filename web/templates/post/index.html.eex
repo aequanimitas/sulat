@@ -3,16 +3,13 @@
 <table class="table">
   <thead>
     <tr>
-      <th>Text</th>
       <th>Title</th>
-
       <th></th>
     </tr>
   </thead>
   <tbody>
 <%= for post <- @posts do %>
     <tr>
-      <td><%= post.text %></td>
       <td><%= post.title %></td>
 
       <td class="text-right">
