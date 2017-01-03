@@ -5,6 +5,8 @@ defmodule Sulat.Post do
     field :text, :string
     field :title, :string
 
+    belongs_to :user, Sulat.User
+
     timestamps()
   end
 

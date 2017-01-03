@@ -17,7 +17,7 @@ defmodule Sulat.SessionController do
       {:ok, conn} ->
         %Plug.Conn{assigns: %{user: user}} = conn
         conn
-        |> put_flash(:error, "Hi #{user.username} welcome back")
+        |> put_flash(:info, "Hi #{user.username} welcome back")
         |> redirect(to: page_path(conn, :index))
       {:error, _, conn} ->
         conn

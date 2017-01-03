@@ -11,6 +11,8 @@ defmodule Sulat.User do
     field :password, :string, virtual: true
     field :password_hash, :string
 
+    has_many :posts, Sulat.Post
+
     timestamps()
   end
 
