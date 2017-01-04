@@ -2,7 +2,9 @@
   <%= @post.title %>
 </h3>
 
-<%= raw(@post.text) %>
+<div>
+  <%= raw(@post.text) %>
+</div>
 
 <%= link "Edit", to: post_path(@conn, :edit, @post) %>
 <%= link "Back", to: post_path(@conn, :index) %>

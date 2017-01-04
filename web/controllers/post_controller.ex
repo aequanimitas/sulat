@@ -1,6 +1,7 @@
 defmodule Sulat.PostController do
   use Sulat.Web, :controller
 
+  import Logger
   alias Sulat.Post
 
   def index(conn, _params) do
@@ -27,18 +28,19 @@ defmodule Sulat.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Repo.get!(Post, id) |> update_text_to_markdown
+    post = Repo.get! Post, id 
+    post = update_text_to_markdown(post)
     render(conn, "show.html", post: post)
   end
 
   def edit(conn, %{"id" => id}) do
-    post = Repo.get!(Post, id)
+    post = Repo.get! Post, id
     changeset = Post.changeset(post)
     render(conn, "edit.html", post: post, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "post" => post_params}) do
-    post = Repo.get!(Post, id)
+    post = Repo.get! Post, id
     changeset = Post.changeset(post, post_params)
 
     case Repo.update(changeset) do
@@ -65,5 +67,12 @@ defmodule Sulat.PostController do
 
   def update_text_to_markdown(post) do
     %{post | text: post.text |> Earmark.to_html}
+  end
+
+  def single_result_qry(id) do
+    from p in Post, 
+    select: struct(p, [:text, :title, :id]), 
+    preload: [:user],
+    where: p.id == ^id
   end
 end
