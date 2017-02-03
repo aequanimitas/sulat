@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :sulat, Sulat.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "sulat_dev",
+  password: "sulat_dev",
   database: "sulat_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
