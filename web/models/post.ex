@@ -10,12 +10,15 @@ defmodule Sulat.Post do
     timestamps()
   end
 
+  # Use a word list sigil with an "a" modifier that specifies each element's type as atom
+  @required_fields ~w(title text)a
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:text, :title])
-    |> validate_required([:text, :title])
+    |> cast(params, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

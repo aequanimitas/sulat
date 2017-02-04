@@ -9,11 +9,15 @@ defmodule Sulat.PostController do
     render(conn, "index.html", posts: posts)
   end
 
+  # this is "/posts/new", just returns a form for creating a new post
   def new(conn, _params) do
     changeset = Post.changeset(%Post{})
     render(conn, "new.html", changeset: changeset)
   end
 
+  # This path maps to "/posts", this catches the POST request
+  # not to be confused with "/posts/new" which is a GET request
+  # which returns a form for creating a new post
   def create(conn, %{"post" => post_params}) do
     changeset = Post.changeset(%Post{}, post_params)
 
