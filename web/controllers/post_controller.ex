@@ -1,7 +1,6 @@
 defmodule Sulat.PostController do
   use Sulat.Web, :controller
 
-  import Logger
   alias Sulat.Post
 
   def index(conn, _params) do

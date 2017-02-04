@@ -2,6 +2,7 @@ defmodule Sulat.PostControllerTest do
   use Sulat.ConnCase
 
   @valid_attrs %{text: "Test Redirect", title: "Title Redirect"}
+
   setup do
     user = create_user(username: "hta")
     conn = assign(build_conn(), :current_user, user)
@@ -18,7 +19,7 @@ defmodule Sulat.PostControllerTest do
     assert html_response(conn, 200) =~ "New post"
   end
 
-  test "redirect after creating new post", %{conn: conn, user: user} do
+  test "redirect after creating new post", %{conn: conn} do
     conn = post conn, post_path(conn, :create), post: @valid_attrs
     assert redirected_to(conn) == post_path(conn, :index)
   end
