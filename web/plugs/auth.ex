@@ -1,6 +1,6 @@
 defmodule Sulat.Auth do
   import Plug.Conn
-  import Phoenix.Controller, only: [put_flash: 3]
+  import Phoenix.Controller, only: [put_flash: 3, redirect: 2]
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
   alias Sulat.Router.Helpers  # *_path
@@ -49,6 +49,17 @@ defmodule Sulat.Auth do
       true ->
         dummy_checkpw()
         {:error, :not_found, conn}
+    end
+  end
+
+  def authenticate_user(conn, _opts) do
+    if conn.assigns.user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access that page")
+      |> redirect(to: Helpers.page_path(conn, :index))
+      |> halt()
     end
   end
 end
