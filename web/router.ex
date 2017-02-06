@@ -20,7 +20,7 @@ defmodule Sulat.Router do
 
     get "/", PageController, :index
     resources "/session", SessionController, only: [:new, :create, :delete]
-    resources "/users", UserController, only: [:new]
+    resources "/users", UserController, only: [:new, :create, :update, :show, :edit]
     resources "/posts", PostController
   end
 

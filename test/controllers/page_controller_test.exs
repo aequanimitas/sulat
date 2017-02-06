@@ -26,6 +26,6 @@ defmodule Sulat.PageControllerTest do
     assert String.contains?(conn.resp_body, second_post.title)
     assert String.contains?(conn.resp_body, first_post.text)
     assert String.contains?(conn.resp_body, second_post.text)
-    assert String.contains?(conn.resp_body, "EDIT")
+    refute String.contains?(conn.resp_body, "EDIT")
   end
 end

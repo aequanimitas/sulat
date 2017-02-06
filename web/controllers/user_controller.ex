@@ -53,15 +53,15 @@ defmodule Sulat.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
+  #def delete(conn, %{"id" => id}) do
+  #  user = Repo.get!(User, id)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(user)
+  #  # Here we use delete! (with a bang) because we expect
+  #  # it to always work (and if it does not, it will raise).
+  #  Repo.delete!(user)
 
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
-  end
+  #  conn
+  #  |> put_flash(:info, "User deleted successfully.")
+  #  |> redirect(to: user_path(conn, :index))
+  #end
 end

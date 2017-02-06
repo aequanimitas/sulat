@@ -27,6 +27,7 @@ defmodule Sulat.ConnCase do
 
       import Sulat.Router.Helpers
 
+      # add test helpers for creating users and posts
       import Sulat.TestHelpers
       # The default endpoint for testing
       @endpoint Sulat.Endpoint

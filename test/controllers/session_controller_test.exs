@@ -1,4 +1,4 @@
-defmodule Sulat.UserControllerTest do
+defmodule Sulat.SessionControllerTest do
   use Sulat.ConnCase
 
   setup do
@@ -7,8 +7,8 @@ defmodule Sulat.UserControllerTest do
     {:ok, conn: conn, user: user}
   end
 
-  test "/users/new renders a login form", %{conn: conn} do
-    conn = get conn, user_path(conn, :new)
+  test "/session/new renders a login form", %{conn: conn} do
+    conn = get conn, session_path(conn, :new)
     assert html_response(conn, 200) =~ "Login"
   end
 end
