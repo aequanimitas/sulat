@@ -30,6 +30,11 @@ defmodule Sulat.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
+    cond do
+      conn.assigns[:user].id == user.id -> render(conn, "show.html", user: user, editable: true)
+      conn.assigns[:user].id != user.id -> render(conn, "show.html", user: user, editable: false)
+      conn.assigns[:user] == nil -> render(conn, "show.html", user: user, editable: false)
+    end
     render(conn, "show.html", user: user)
   end
 

@@ -7,7 +7,8 @@
     <%= @user.username %>
   </li>
 
-  <li>
+  <%= if false do %>
+    <li>
     <strong>Email:</strong>
     <%= @user.email %>
   </li>
@@ -20,10 +21,14 @@
   <li>
     <strong>Password hash:</strong>
     <%= @user.password_hash %>
-  </li>
-
+    </li>
+  <% end %>
 </ul>
 
-<%= link "Edit", to: user_path(@conn, :edit, @user) %>
+<%# need smarter logic for this one %>
+<%# if current user == id for logged-in user, permit edit %>
+<%= if @editable do %>
+  <%= link "Edit", to: user_path(@conn, :edit, @user) %>
+<% end %>
 <%# comment this line since we're selectively routing now%>
 <%# <%= link "Back", to: user_path(@conn, :index) %>

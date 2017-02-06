@@ -5,7 +5,8 @@
       <%= raw(post.text) %> 
     </div>
   </div>
-  <%= if @user do %>
+
+  <%= if @user && @user.id == post.user_id do %>
     <tr>
       <td class="text-right">
         <%= link "Show", to: post_path(@conn, :show, post), class: "btn btn-default btn-xs" %>
