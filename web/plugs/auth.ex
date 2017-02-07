@@ -16,7 +16,7 @@ defmodule Sulat.Auth do
   :user_id comes from 2 sources: after logging in or after registration
   """
   def call(conn, repo) do
-    user_id = get_session(conn, :user_id)
+    user_id = get_session(conn, :active_user_id)
     cond do
       user = conn.assigns[:active_user] -> 
         conn
@@ -33,7 +33,7 @@ defmodule Sulat.Auth do
     # put user in conn struct
     |> assign(:active_user, user)
     # add user.id to session, use :user_id as session label
-    |> put_session(:user_id, user.id)
+    |> put_session(:active_user_id, user.id)
     |> configure_session(renew: true)
   end
 
