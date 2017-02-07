@@ -12,7 +12,7 @@
     <tr>
       <td><%= post.title %></td>
 
-      <%= if @user && @user.id == post.user_id do %>
+      <%= if @current_user && @current_user.id == post.user_id do %>
         <td class="text-right">
           <%= link "Show", to: post_path(@conn, :show, post), class: "btn btn-default btn-xs" %>
           <%= link "Edit", to: post_path(@conn, :edit, post), class: "btn btn-default btn-xs" %>
@@ -24,6 +24,6 @@
   </tbody>
 </table>
 
-<%= if @user do %>
+<%= if @current_user do %>
   <%= link "New post", to: post_path(@conn, :new) %>
 <% end %>

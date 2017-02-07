@@ -24,6 +24,12 @@ defmodule Sulat.UserControllerTest do
   end
 
   @tag login_as: "hta"
+  test "/users/:id should show edit button", %{conn: conn, user: user} do
+    conn = get conn, user_path(conn, :edit, user.id)
+    assert html_response(conn, 200) =~ "Edit"
+  end
+
+  @tag login_as: "hta"
   test "/users/:id/edit should not redirect", %{conn: conn, user: user} do
     conn = get conn, user_path(conn, :edit, user.id)
     assert html_response(conn, 200)

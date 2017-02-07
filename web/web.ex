@@ -36,6 +36,9 @@ defmodule Sulat.Web do
 
       import Sulat.Router.Helpers
       import Sulat.Gettext
+
+      # share plug to all controllers
+      import Sulat.Auth, only: [authenticate_user: 2]
     end
   end
 

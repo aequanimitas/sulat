@@ -3,6 +3,9 @@ defmodule Sulat.PostController do
 
   alias Sulat.Post
 
+  @needs_auth ~w(edit create new)a
+  plug :authenticate_user when action in @needs_auth
+
   def index(conn, _params) do
     posts = Repo.all(Post)
     render(conn, "index.html", posts: posts)
@@ -16,7 +19,7 @@ defmodule Sulat.PostController do
 
   # This path maps to "/posts", this catches the POST request
   # not to be confused with "/posts/new" which is a GET request
-  # which returns a form for creating a new post
+  # that returns a form for creating a new post
   def create(conn, %{"post" => post_params}) do
     changeset = Post.changeset(%Post{}, post_params)
 
@@ -31,8 +34,7 @@ defmodule Sulat.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Repo.get! Post, id 
-    post = update_text_to_markdown(post)
+    post = Repo.get!(Post, id) |> update_text_to_markdown
     render(conn, "show.html", post: post)
   end
 
