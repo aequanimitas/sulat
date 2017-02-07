@@ -6,14 +6,15 @@ defmodule Sulat.Auth do
   alias Sulat.Router.Helpers  # *_path
 
   @doc """
-  Extract the app repo that was passed when the plug was "plugged"
+  - Called when the application starts
+  - Extract the app repo that was passed when the plug was "plugged"
   """
   def init(opts) do
     Keyword.fetch! opts, :repo
   end
 
   @doc """
-  :user_id comes from 2 sources: after logging in or after registration
+  - Called before passing a request to a route
   """
   def call(conn, repo) do
     user_id = get_session(conn, :active_user_id)

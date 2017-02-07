@@ -15,7 +15,7 @@ defmodule Sulat.SessionController do
   def create(conn, %{"session" => %{"username" => username, "password" => password}}) do
     case Sulat.Auth.login_with_username_password(conn, username, password, repo: Repo) do
       {:ok, conn} ->
-        %Plug.Conn{assigns: %{user: user}} = conn
+        %Plug.Conn{assigns: %{active_user: user}} = conn
         conn
         |> put_flash(:info, "Hi #{user.username} welcome back")
         |> redirect(to: page_path(conn, :index))

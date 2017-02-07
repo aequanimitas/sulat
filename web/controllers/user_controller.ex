@@ -4,7 +4,7 @@ defmodule Sulat.UserController do
   alias Sulat.User
 
   @auth ~w(edit)a
-  @view_permissions ~w(edit show update)a
+  @view_permissions ~w(show update)a ++ @auth
   plug :authenticate_user when action in @auth
   plug :is_owner when action in @view_permissions
 
@@ -62,6 +62,7 @@ defmodule Sulat.UserController do
     end
   end
 
+  # this can be generalized, but favor specialization for now
   def is_owner(conn, _params) do
     %{params: %{"id" => user_id}} = conn
     # needs this check here for logged out users
