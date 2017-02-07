@@ -10,7 +10,7 @@ defmodule Sulat.PostController do
   plug :authenticate_user when action in @needs_auth
   plug :is_owner when action in @ownership
 
-  def index(conn, _params, user) do
+  def index(conn, _params, _user) do
     posts = Repo.all(Post)
     render(conn, "index.html", posts: posts)
   end
@@ -39,7 +39,6 @@ defmodule Sulat.PostController do
       user
       |> build_assoc(:posts)
       |> Post.changeset(post_params)
-
     case Repo.insert(changeset) do
       {:ok, _post} ->
         conn
@@ -50,9 +49,16 @@ defmodule Sulat.PostController do
     end
   end
 
-  def show(conn, %{"id" => id}, user) do
-    post = Repo.get!(Post, id) |> update_text_to_markdown
-    render(conn, "show.html", post: post)
+  def show(conn, %{"id" => id}, _user) do
+    case Repo.get(Post, id) do
+      nil -> 
+        conn
+        |> put_status(404)
+        |> render(Sulat.ErrorView, :"404", message: "Post not found")
+      post -> 
+        post = update_text_to_markdown post
+        render(conn, :show, post: post)
+    end
   end
 
   def edit(conn, %{"id" => id}, user) do
@@ -87,32 +93,36 @@ defmodule Sulat.PostController do
     |> redirect(to: post_path(conn, :index))
   end
 
-  def is_owner(conn, _params) do
-    %{params: %{"id" => post_id}} = conn
-    if(conn.assigns.active_user) do
-      if conn.assigns.active_user.id == Repo.get(Post, post_id).user_id do
-        conn
-      else
-        # check logs, should output 0 result in query
-        conn
-        |> put_flash(:error, "You don't have power here")
-        |> redirect(to: post_path(conn, :new))
-      end
+  defp get_single_post(nil) do {:error, "Post doesn't exist"} end
+  defp get_single_post(post) do {:ok, post} end
+
+  defp user_is_owner(u, p) do
+    if u.id == p.user_id do
+      {:ok, true}
     else
-      conn
-      |> put_flash(:error, "You don't have power here")
-      |> redirect(to: page_path(conn, :index))
+      {:ok, false}
     end
   end
 
-  def update_text_to_markdown(post) do
-    %{post | text: post.text |> Earmark.to_html}
+  def is_owner(conn, _params) do
+    %{params: %{"id" => post_id}} = conn
+    with {:ok, user} <- active_user_exists(conn),
+         {:ok, post} <- Repo.get(Post, post_id) |> get_single_post,
+         {:ok, post} <- user_is_owner(user, post)
+    do
+      conn
+    else
+      err ->
+        conn
+        |> put_flash(:error, err)
+        |> redirect(to: page_path(conn, :index))
+    end
   end
 
-  def single_result_qry(id) do
-    from p in Post, 
-    select: struct(p, [:text, :title, :id]), 
-    preload: [:user],
-    where: p.id == ^id
+  defp active_user_exists(nil) do {:error, "Unauthorized"} end
+  defp active_user_exists(conn) do {:ok, conn.assigns.active_user} end
+
+  def update_text_to_markdown(post) do
+    %{post | text: post.text |> Earmark.to_html}
   end
 end
