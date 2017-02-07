@@ -1,5 +1,4 @@
 <h2>Show user</h2>
-
 <ul>
 
   <li>
@@ -7,7 +6,7 @@
     <%= @user.username %>
   </li>
 
-  <%= if false do %>
+  <%= if @owner do %>
     <li>
     <strong>Email:</strong>
     <%= @user.email %>
@@ -25,10 +24,7 @@
   <% end %>
 </ul>
 
-<%# need smarter logic for this one %>
-<%# if current user == id for logged-in user, permit edit %>
-<%= if @editable do %>
+<%= if @owner do %>
   <%= link "Edit", to: user_path(@conn, :edit, @user) %>
 <% end %>
-<%# comment this line since we're selectively routing now%>
 <%# <%= link "Back", to: user_path(@conn, :index) %>

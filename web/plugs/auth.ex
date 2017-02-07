@@ -17,14 +17,21 @@ defmodule Sulat.Auth do
   """
   def call(conn, repo) do
     user_id = get_session(conn, :user_id)
-    user = user_id && repo.get Sulat.User, user_id
-    assign(conn, :user, user)
+    cond do
+      user = conn.assigns[:active_user] -> 
+        conn
+      user = user_id && repo.get(Sulat.User, user_id) -> 
+        assign(conn, :active_user, user)
+      true -> 
+        # always runs when logged out, causing errors to the function plug
+        assign(conn, :active_user, nil)
+    end
   end
 
   def login(conn, user) do
     conn
     # put user in conn struct
-    |> assign(:user, user)
+    |> assign(:active_user, user)
     # add user.id to session, use :user_id as session label
     |> put_session(:user_id, user.id)
     |> configure_session(renew: true)
@@ -53,7 +60,7 @@ defmodule Sulat.Auth do
   end
 
   def authenticate_user(conn, _opts) do
-    if conn.assigns.user do
+    if conn.assigns.active_user do
       conn
     else
       conn

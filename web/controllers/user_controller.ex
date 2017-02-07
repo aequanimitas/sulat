@@ -3,14 +3,19 @@ defmodule Sulat.UserController do
 
   alias Sulat.User
 
+  @auth ~w(edit)a
+  @view_permissions ~w(edit show update)a
+  plug :authenticate_user when action in @auth
+  plug :is_owner when action in @view_permissions
+
   def index(conn, _params) do
     users = Repo.all(User)
-    render(conn, "index.html", users: users)
+    render(conn, :index, users: users)
   end
 
   def new(conn, _params) do
     changeset = User.changeset(%User{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -24,24 +29,23 @@ defmodule Sulat.UserController do
       {:error, changeset} ->
         conn
         |> put_flash(:info, "Errors.")
-        |> render("new.html", changeset: changeset)
+        |> render(:new, changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    cond do
-      conn.assigns[:user].id == user.id -> render(conn, "show.html", user: user, editable: true)
-      conn.assigns[:user].id != user.id -> render(conn, "show.html", user: user, editable: false)
-      conn.assigns[:user] == nil -> render(conn, "show.html", user: user, editable: false)
-    end
     render(conn, "show.html", user: user)
   end
 
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+    if (conn.assigns.owner) do
+      render(conn, :edit, user: user, changeset: changeset)
+    else
+      redirect(conn, to: user_path(conn, :new))
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
@@ -54,7 +58,19 @@ defmodule Sulat.UserController do
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))
       {:error, changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset)
+        render(conn, :edit, user: user, changeset: changeset)
+    end
+  end
+
+  def is_owner(conn, _params) do
+    %{params: %{"id" => user_id}} = conn
+    # needs this check here for logged out users
+    if (conn.assigns.active_user) do
+      if(Repo.get(User, user_id).id == conn.assigns.active_user.id) do
+        assign(conn, :owner, true)
+      end
+    else
+      assign(conn, :owner, false)
     end
   end
 

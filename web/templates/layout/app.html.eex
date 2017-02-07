@@ -19,7 +19,7 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <%= if @user do %>
+            <%= if @active_user do %>
               <li>
                 <%= link "Logout", to: session_path(@conn, :delete, @user), method: "delete"%> 
               </li>
