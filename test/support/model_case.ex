@@ -14,6 +14,7 @@ defmodule Sulat.ModelCase do
 
   use ExUnit.CaseTemplate
 
+  # serves as a place for common imports and aliases
   using do
     quote do
       alias Sulat.Repo
@@ -25,6 +26,7 @@ defmodule Sulat.ModelCase do
     end
   end
 
+  # handle transactional tests: run a test then rollback any changes made during a test
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Sulat.Repo)
 

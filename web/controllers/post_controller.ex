@@ -67,7 +67,7 @@ defmodule Sulat.PostController do
     render(conn, "edit.html", post: post, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "post" => post_params}) do
+  def update(conn, %{"id" => id, "post" => post_params}, _user) do
     post = Repo.get! Post, id
     changeset = Post.changeset(post, post_params)
 
@@ -81,8 +81,9 @@ defmodule Sulat.PostController do
     end
   end
 
+  # get a user's posts first before deleting
   def delete(conn, %{"id" => id}, user) do
-    post = Repo.get!(Post, id)
+    post = Repo.get!(assoc(user, :posts), id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
@@ -93,14 +94,14 @@ defmodule Sulat.PostController do
     |> redirect(to: post_path(conn, :index))
   end
 
-  defp get_single_post(nil) do {:error, "Post doesn't exist"} end
+  defp get_single_post(nil) do "Post doesn't exist" end
   defp get_single_post(post) do {:ok, post} end
 
   defp user_is_owner(u, p) do
     if u.id == p.user_id do
       {:ok, true}
     else
-      {:ok, false}
+      "Unauthorized"
     end
   end
 
@@ -108,7 +109,7 @@ defmodule Sulat.PostController do
     %{params: %{"id" => post_id}} = conn
     with {:ok, user} <- active_user_exists(conn),
          {:ok, post} <- Repo.get(Post, post_id) |> get_single_post,
-         {:ok, post} <- user_is_owner(user, post)
+         {:ok, true} <- user_is_owner(user, post)
     do
       conn
     else
